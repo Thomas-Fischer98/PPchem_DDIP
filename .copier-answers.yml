@@ -1,0 +1,9 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 66fd52c
+_src_path: gh:schwallergroup/copier-liac-minimal
+author_email: thomas.fischer@epfl.ch
+author_name: Thomas Fischer
+github_org: Thomas-Fischer98
+package_name: ppchem_ddip
+project_name: PPchem_DDIP
+short_description: PPchem-DDIP project
