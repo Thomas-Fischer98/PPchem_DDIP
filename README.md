@@ -9,11 +9,10 @@ PPchem_DDIP
 <br>
 
 
-PPchem-DDIP project
 
 ## Overview
 
-DDIP (Drug Developpment and pIC50 Prediction) is a programm based on in a jupyter notebook format that can predict pIC50 values for different drugs acting on a target protein. To do so, different machine learning models (such as Forest, ... and ...) were tested in order to have the best prediction on pIC50 values. 
+DDIP (Drug Developpment and pIC50 Prediction) is a programm based in a jupyter notebook format that can predict pIC50 values for different drugs acting on a target protein. To do so, different machine learning models (such as Forest, ... and ...) were tested in order to have the best prediction on pIC50 values. 
 
 
 ## 🔥 Usage
@@ -86,7 +85,7 @@ Kelian Gaedecke :
 David Segura :
 Thomas Fischer :
 
-This project was created for the class "Practical Programmin in Chemistry" at EPFL.
+This project was created for the class "Practical Programming in Chemistry" at EPFL.
 
 
 
