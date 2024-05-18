@@ -4,6 +4,7 @@ channels:
   - defaults
 dependencies:
   - python=3.9
+  - ipykernel
   - numpy
   - pandas
   - scikit-learn
@@ -73,6 +74,7 @@ dependencies:
     - rich
     - scipy
     - six
+    - statistics
     - streamlit
     - sympy
     - tensorboard
