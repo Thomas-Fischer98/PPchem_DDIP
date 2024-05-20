@@ -13,6 +13,8 @@ dependencies = [
 ]
 authors = [
     {name = "Thomas Fischer", email = "thomas.fischer@epfl.ch"}
+    {name = "Kelian Gaedecke", email = "kelian.gaedecke@epfl.ch"}
+    {name = "David Segura", email = "david.segura@epfl.ch"}
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
