@@ -16,7 +16,7 @@ DDIP (Drug Developpment and pIC50 Prediction) is a programm based in a jupyter n
 
 ## 👩‍💻 Installation
 
-# Setup environment. 
+### Setup environment. 
 
 To setup the enviromnent, you first you need to clone the repository on your local storage. 
 
@@ -24,15 +24,16 @@ To setup the enviromnent, you first you need to clone the repository on your loc
 git clone https://github.com/Thomas-Fischer98/PPchem_DDIP.git
 ```
 
-Then you can create the environment.
+You can create the environment. To do so, you need to go in the folder .github/workflow 
+Then you can enter the following code line.
 
 ```
-conda create -n ppchem_ddip python=3.10 
+conda env create -f environment.yml 
 ```
 Then you can activate the environment. 
 
 ```
-conda activate ppchem_ddip
+conda activate myenv
 ```
 
 If you need jupyter lab, install it 
@@ -41,7 +42,7 @@ If you need jupyter lab, install it
 (ppchem_ddip) $ pip install jupyterlab
 ```
 
-# Install packages
+### Install packages
 
 
 
