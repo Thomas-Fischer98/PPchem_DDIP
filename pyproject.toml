@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "PPchem_DDIP"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 license = {file = "LICENSE"}
 description = "PPchem-DDIP project"
 dependencies = [
