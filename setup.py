@@ -85,6 +85,7 @@ setup(
         'pydeck>=0.9.1',
         'Pygments>=2.18.0',
         'pyparsing>=3.1.2',
+        'pytest==8.2.1',
         'python-dateutil>=2.9.0.post0',
         'pytz>=2024.1',
         'pyzmq>=26.0.3',
