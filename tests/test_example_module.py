@@ -108,6 +108,23 @@ def test_data_split_scale():
     assert Y_train.shape[0] > 0
     assert Y_test.shape[0] > 0
 
+def test_optimize_hyperparameters_random_search(mock_dataframe, model_type):
+    best_params, test_accuracy = optimize_hyperparameters_random_search(mock_dataframe, model_type)
+    
+    assert isinstance(best_params, dict), "best_params should be a dictionary"
+    assert isinstance(test_accuracy, float), "test_accuracy should be a float"
+    assert 0 <= test_accuracy <= 1, "test_accuracy should be between 0 and 1"
+
+    # Ensure that the best model is fitted
+    if model_type == 'rf':
+        model = RandomForestClassifier(**best_params)
+    elif model_type == 'gbm':
+        model = GradientBoostingClassifier(**best_params)
+    elif model_type == 'fcn':
+        model = MLPClassifier(**best_params)
+
+    assert is_model_fitted(model), f"The model of type {model_type} should be fitted"
+
 if __name__ == "__main__":
     pytest.main()
 
