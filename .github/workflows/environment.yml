@@ -74,6 +74,7 @@ dependencies:
     - rich
     - scipy
     - six
+    - Skorch
     - statistics
     - streamlit
     - sympy
