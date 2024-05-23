@@ -67,6 +67,7 @@ dependencies:
     - protobuf
     - pygments
     - pyparsing
+    - pytest
     - python-dateutil
     - pytz
     - requests
