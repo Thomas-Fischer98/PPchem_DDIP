@@ -32,6 +32,8 @@ from torch.utils.data import TensorDataset, DataLoader
 import skorch
 from skorch import NeuralNetClassifier
 
+from chembl_webresource_client.new_client import new_client
+
 selection = VarianceThreshold(threshold=(.8 * (1 - .8))) 
 
 # FUNCTION DEFINTIONS
