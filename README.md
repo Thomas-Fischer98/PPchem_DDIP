@@ -1,4 +1,4 @@
-![Project Logo](image_dipp.png)
+![Project Logo](assets/image_dipp.png)
 
 ![Coverage Status](assets/coverage-badge.svg)
 
@@ -12,7 +12,7 @@ PPchem_DDIP
 
 ## Overview
 
-DDIP (Drug Developpment and pIC50 Prediction) is a programm based in a jupyter notebook format that can predict pIC50 values for different drugs acting on a target protein. To do so, different machine learning models (such as Forest, ... and ...) were tested in order to have the best prediction on pIC50 values. 
+DDIP (Drug Developpment and pIC50 Prediction) is a programm based in a jupyter notebook format that can predict pIC50 values for different drugs acting on a target protein. To do so, different machine learning models (such as RandomForest, Gradient Boosting Machines (GBM) and Fully Connected Neural Network) were tested in order to have the best prediction on pIC50 values. These pIC50 values are then used to determine if a drug is bioactive on the target protein. 
 
 ## 👩‍💻 Installation
 
@@ -41,10 +41,13 @@ If you need jupyter lab, install it
 ```
 (ppchem_ddip) $ pip install jupyterlab
 ```
-
 ### Install packages
 
+To install the needed packages, you can enter the following command. 
 
+```
+pip install ppchem_ddip
+```
 
 ## 🔥 Usage
 
@@ -59,11 +62,15 @@ This usage example shows how to quickly leverage the package's main functionalit
 After importing the `main_func` (to be renamed by you), you simply pass in your `data` and get the `result` (this is just an example, your package might have other inputs and outputs). 
 Short and sweet, but the real power lies in the detailed documentation.
 
+## License
+
+This project is licensed under the MIT license
+
 ## Authors
 
-Kelian Gaedecke :
-David Segura :
-Thomas Fischer :
+Kelian Gaedecke : https://github.com/KelianGaedecke
+David Segura : https://github.com/Davidmingsegura
+Thomas Fischer : https://github.com/Thomas-Fischer98
 
 This project was created for the class "Practical Programming in Chemistry" at EPFL.
 
