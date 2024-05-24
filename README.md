@@ -68,9 +68,9 @@ This project is licensed under the MIT license
 
 ## Authors
 
-Kelian Gaedecke : https://github.com/KelianGaedecke
-David Segura : https://github.com/Davidmingsegura
-Thomas Fischer : https://github.com/Thomas-Fischer98
+- Kelian Gaedecke : https://github.com/KelianGaedecke
+- David Segura : https://github.com/Davidmingsegura
+- Thomas Fischer : https://github.com/Thomas-Fischer98
 
 This project was created for the class "Practical Programming in Chemistry" at EPFL.
 
