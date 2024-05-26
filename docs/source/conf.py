@@ -94,3 +94,7 @@ suppress_warnings = [
 
 html_theme = "furo"
 html_static_path = ["_static"]
+#html_logo met un logo sur le site
+html_logo = 'image_dipp.png'
+html_favicon = 'image_dipp.png'
+html_title = 'DDIP'
