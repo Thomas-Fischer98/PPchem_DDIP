@@ -1,40 +1,39 @@
 import numpy as np
-import seaborn as sns
 import pandas as pd
-import rdkit
+import seaborn as sns
 import matplotlib.pyplot as plt
+#import sklearn
+from itertools import cycle
 
-from rdkit import Chem 
+from rdkit import Chem
 from rdkit.Chem import Descriptors, Lipinski
 
 from sklearn import preprocessing
-
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, RandomForestClassifier, GradientBoostingClassifier
+from sklearn.preprocessing import StandardScaler, label_binarize
 from sklearn.model_selection import train_test_split, cross_val_score, cross_val_predict, RandomizedSearchCV
 from sklearn.feature_selection import VarianceThreshold
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, explained_variance_score, median_absolute_error, max_error
-from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, classification_report
-from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, RandomForestClassifier, GradientBoostingClassifier
+from sklearn.neural_network import MLPClassifier, MLPRegressor
+from sklearn.svm import SVC
+from sklearn.metrics import (
+    mean_squared_error, mean_absolute_error, r2_score, explained_variance_score, median_absolute_error, max_error,
+    confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, classification_report,
+    roc_curve, auc
+)
 
-#from tensorflow.keras.models import Sequential
-#from tensorflow.keras.layers import Dense, Dropout
-from sklearn.preprocessing import StandardScaler
-from sklearn.neural_network import MLPRegressor
-import keras_tuner as kt
+from scipy.stats import randint, uniform
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import TensorDataset, DataLoader
-from scipy.stats import randint
-from scipy.stats import uniform
 from torch.utils.data import TensorDataset, DataLoader
 
 import skorch
 from skorch import NeuralNetClassifier
 
 from chembl_webresource_client.new_client import new_client
+from joblib import dump, load
 
-selection = VarianceThreshold(threshold=(.8 * (1 - .8))) 
 
 # FUNCTION DEFINTIONS
 
@@ -392,20 +391,57 @@ def data_split_scale(X,Y):
     return X_train, X_test, Y_train, Y_test
 
 
+def plot_multiclass_roc(y_test, y_score, n_classes):
+    """
+    y_test: true features of the test data
+    y_score
+
+    The function create a plot of the ROC curve for multiclass.
+    """
+
+    y_test_bin = label_binarize(y_test, classes=list(range(n_classes)))
+    fpr = dict()
+    tpr = dict()
+    roc_auc = dict()
+    for i in range(n_classes):
+        fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_score[:, i])
+        roc_auc[i] = auc(fpr[i], tpr[i])
+
+    fpr["micro"], tpr["micro"], _ = roc_curve(y_test_bin.ravel(), y_score.ravel())
+    roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+
+    plt.figure()
+    colors = cycle(['aqua', 'darkorange', 'cornflowerblue', 'darkgreen', 'darkred'])
+    for i, color in zip(range(n_classes), colors):
+        plt.plot(fpr[i], tpr[i], color=color, lw=2,
+                 label='ROC curve of class {0} (area = {1:0.2f})'
+                       ''.format(i, roc_auc[i]))
+
+    plt.plot(fpr["micro"], tpr["micro"], color='deeppink', linestyle=':', linewidth=4,
+             label='micro-average ROC curve (area = {0:0.2f})'
+                   ''.format(roc_auc["micro"]))
+
+    plt.plot([0, 1], [0, 1], 'k--', lw=2)
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic')
+    plt.legend(loc="lower right")
+    plt.show()
+
 def optimize_hyperparameters_random_search(dataframe, model_type):
     """
     dataframe: clean dataframe of the candidate molecules with the descriptors
-    model_type: 'rf', 'gbm', or 'fcn'
-    
+    model_type: 'rf', 'svm', or 'fcn'
 
-    The function do the data preparation and then train the chosen model using a randomized search. The model is then evaluated 
-    using the accuracy, the precision, the recall, the F1 Score and the confusion matrix.
+    The function does the data preparation and then trains the chosen model using a randomized search.
+    The model is then evaluated using accuracy, precision, recall, F1 Score, and confusion matrix.
     The best parameter found are then returned.
-    """ 
+    """
 
-    
     X_train, X_test, y_train, y_test = data_prep(dataframe)
-    np.random.seed(100) 
+    np.random.seed(100)
 
     if model_type == 'rf':
         model = RandomForestClassifier()
@@ -415,14 +451,12 @@ def optimize_hyperparameters_random_search(dataframe, model_type):
             'min_samples_split': randint(2, 20),
             'min_samples_leaf': randint(1, 20),
         }
-    elif model_type == 'gbm':
-        model = GradientBoostingClassifier()
+    elif model_type == 'svm':
+        model = SVC(probability=True)
         param_space = {
-            'n_estimators': randint(100, 500),
-            'learning_rate': uniform(0.01, 0.49),
-            'max_depth': randint(3, 10),
-            'min_samples_split': randint(2, 20),
-            'min_samples_leaf': randint(1, 20),
+            'C': uniform(0.1, 10),
+            'gamma': uniform(0.01, 1),
+            'kernel': ['linear', 'rbf', 'poly', 'sigmoid'],
         }
     elif model_type == 'fcn':
         model = MLPClassifier(hidden_layer_sizes=(100,), solver='adam')
@@ -432,7 +466,7 @@ def optimize_hyperparameters_random_search(dataframe, model_type):
             'learning_rate_init': uniform(0.001, 0.099),
         }
     else:
-        raise ValueError("Invalid model_type. Choose 'rf', 'gbm', or 'fcn'.")
+        raise ValueError("Invalid model_type. Choose 'rf', 'svm', or 'fcn'.")
 
     opt = RandomizedSearchCV(
         estimator=model,
@@ -440,7 +474,7 @@ def optimize_hyperparameters_random_search(dataframe, model_type):
         n_iter=25,
         cv=5,
         n_jobs=-1,
-        scoring='accuracy',  # Optimize for accuracy
+        scoring='accuracy',
         verbose=0,
         random_state=42,
     )
@@ -449,8 +483,8 @@ def optimize_hyperparameters_random_search(dataframe, model_type):
     best_params = opt.best_params_
     best_model = opt.best_estimator_
     y_pred = best_model.predict(X_test)
-    
-    # Evaluate the model
+    y_score = best_model.predict_proba(X_test)
+
     test_accuracy = accuracy_score(y_test, y_pred)
     test_precision = precision_score(y_test, y_pred, average='weighted')
     test_recall = recall_score(y_test, y_pred, average='weighted')
@@ -463,7 +497,6 @@ def optimize_hyperparameters_random_search(dataframe, model_type):
     print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
     print("Classification Report:\n", classification_report(y_test, y_pred))
 
-    # Plot confusion matrix
     cm = confusion_matrix(y_test, y_pred)
     plt.matshow(cm, cmap=plt.cm.Blues)
     plt.title('Confusion Matrix')
@@ -472,4 +505,47 @@ def optimize_hyperparameters_random_search(dataframe, model_type):
     plt.xlabel('Predicted label')
     plt.show()
 
+
     return best_params, test_accuracy
+
+def randomize_smiles(smiles):
+    """
+    Generate a randomized SMILES string
+    """
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        return None
+    return Chem.MolToSmiles(mol, doRandom=True)
+
+def augment_data(df, num_augments=5):
+    augmented_data = []
+
+    for idx, row in df.iterrows():
+        smiles = row['canonical_smiles']
+        for _ in range(num_augments):
+            random_smiles = randomize_smiles(smiles)
+            if random_smiles:
+                augmented_row = row.copy()
+                augmented_row['canonical_smiles'] = random_smiles
+                augmented_data.append(augmented_row)
+
+    augmented_df = pd.DataFrame(augmented_data)
+    return augmented_df
+
+def plot_f1_scores(y_pred, y_test , n_classes):
+    """
+    y_pred: predicted label
+    y_test: true label
+    n_classes: number of classes
+    """
+
+    f1_scores = f1_score(y_test, y_pred, average=None)
+    plt.figure()
+    classes = list(range(n_classes))
+    plt.bar(classes, f1_scores, color=['aqua', 'darkorange', 'cornflowerblue', 'darkgreen', 'darkred'][:n_classes])
+    plt.xlabel('Class')
+    plt.ylabel('F1 Score')
+    plt.title('F1 Score for each class')
+    plt.xticks(classes)
+    plt.ylim([0.0, 1.0])
+    plt.show()
