@@ -1,10 +1,13 @@
 import pytest
 import pandas as pd
+import numpy as np
+from sklearn.datasets import make_classification
 from rdkit.Chem import Descriptors
 
 from ppchem_ddip.functions import (
     lipinski1, lipinski, norm_value, pIC50, descriptors1, descriptors,
-    data_cleaner, add_bioactivity, lipinski_df, descriptor_df, data_prep, data_split_scale
+    data_cleaner, add_bioactivity, lipinski_df, descriptor_df, data_prep, data_split_scale, plot_multiclass_roc,
+    randomize_smiles, augment_data, plot_f1_scores
 )
 
 # Mock data for testing
@@ -111,13 +114,63 @@ def test_data_prep(dataframe):
     assert Y_train.shape[0] > 0
     assert Y_test.shape[0] > 0
 
-def test_data_split_scale(dataframe):
-    bioactivity_df = add_bioactivity(dataframe)
-    X_train, X_test, Y_train, Y_test = data_prep(bioactivity_df)
-    assert X_train.shape[0] > 0
-    assert X_test.shape[0] > 0
-    assert Y_train.shape[0] > 0
-    assert Y_test.shape[0] > 0
+def test_data_split_scale():
+    np.random.seed(42)
+    num_samples = 100
+    num_features = 10
+    X = np.random.rand(num_samples, num_features)
+    Y = np.random.randint(0, 2, size=num_samples)
+
+    X_train, X_test, Y_train, Y_test = data_split_scale(X, Y)
+
+    assert X_train.shape[0] == int(0.8 * num_samples)
+    assert X_test.shape[0] == int(0.2 * num_samples)
+    assert X_train.shape[1] == num_features
+    assert X_test.shape[1] == num_features
+    assert len(Y_train) == int(0.8 * num_samples)
+    assert len(Y_test) == int(0.2 * num_samples)
+
+    assert np.allclose(np.mean(X_train, axis=0), 0)
+    assert np.allclose(np.std(X_train, axis=0), 1)  
+
+
+def test_plot_multiclass_roc():
+    n_classes = 5
+    y_test = np.random.randint(0, n_classes, size=100)
+    y_score = np.random.rand(100, n_classes)
+    plot_multiclass_roc(y_test, y_score, n_classes)
+
+def test_optimize_hyperparameters_random_search():
+    np.random.seed(42)
+    X, y = make_classification(n_samples=1000, n_features=20, n_classes = 3)
+    dataframe = pd.DataFrame(X)
+    dataframe['target'] = y
+    model_type = 'rf'
+    best_params, test_accuracy = test_optimize_hyperparameters_random_search(dataframe, model_type)
+    assert isinstance(best_params, dict)
+    assert isinstance(test_accuracy, float)
+
+def test_randomize_smiles():
+    smiles = 'CCO'
+    randomized_smiles = randomize_smiles(smiles)
+    assert isinstance(randomized_smiles, str)
+
+def test_augment_data():
+    np.random.seed(42)
+    num_samples = 100
+    df = pd.DataFrame({'canonical_smiles': ['CCO']*num_samples})
+    augmented_df = augment_data(df)
+    assert augmented_df.shape[0] == num_samples*5
+
+def test_plot_f1_scores():
+    n_classes = 5
+    y_test = np.random.randint(0, n_classes, size=100)
+    y_pred = np.random.randint(0,n_classes, size=100)
+    plot_f1_scores(y_pred, y_test, n_classes)
+
+
+
+
 
 if __name__ == "__main__":
     pytest.main()
