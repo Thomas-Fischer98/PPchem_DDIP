@@ -282,7 +282,6 @@ def lipinski_df(dataframe):
 
     return dataframe_lipinski
 
-#### DEFINITION FUNCTION ####
 
 """
 def descriptors(smiles):
@@ -318,34 +317,7 @@ def descriptor_df(dataframe):
     
     return dataframe_descriptors
 
-#### DEFINITION FUNCTION ####
 
-def data_prep(dataframe):
-    
-    dataframe = dataframe.drop('molecule_chembl_id', axis=1)
-    #dataframe = dataframe.drop('Bioactivity', axis=1)
-    dataframe = dataframe.drop('canonical_smiles', axis=1)
-
-    selection = VarianceThreshold(threshold=(.9 * (1 - .3)))
-
-    X = dataframe.drop('pIC50', axis=1)
-    X = selection.fit_transform(X)
-    Y = dataframe['Bioactivity']
-
-    X_train, X_test, Y_train, Y_test = data_split_scale(X,Y)
-
-    return X_train, X_test, Y_train, Y_test
-
-def data_split_scale(X,Y):
-    
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
-    scaler = StandardScaler().fit(X_train)
-    X_train = scaler.transform(X_train)
-    X_test = scaler.transform(X_test)
-    
-    return X_train, X_test, Y_train, Y_test
-
-#### DEFINITION FUNCTION ####
 
 
 def data_prep(dataframe):
