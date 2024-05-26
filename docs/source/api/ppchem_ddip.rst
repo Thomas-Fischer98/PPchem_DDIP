@@ -12,6 +12,14 @@ ppchem\_ddip.example\_module module
    :undoc-members:
    :show-inheritance:
 
+ppchem\_ddip.functions module
+-----------------------------
+
+.. automodule:: ppchem_ddip.functions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

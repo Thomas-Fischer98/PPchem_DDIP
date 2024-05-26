@@ -1,8 +1,6 @@
 import pytest
 import pandas as pd
-import numpy as np
-from rdkit import Chem
-from rdkit.Chem import Descriptors, Lipinski
+from rdkit.Chem import Descriptors
 
 from ppchem_ddip.functions import (
     lipinski1, lipinski, norm_value, pIC50, descriptors1, descriptors,
