@@ -317,6 +317,32 @@ def descriptor_df(dataframe):
     
     return dataframe_descriptors
 
+def descriptor_smiles(smiles):
+    """
+    smiles: a single SMILES string of the candidate molecule
+
+    The function calculates and adds the RDKit descriptors, normalizes the standard values, and the pIC50
+    
+    """ 
+    # Convert SMILES to a dataframe
+    dataframe = pd.DataFrame({'canonical_smiles': [smiles]})
+
+    # Calculate descriptors
+    dataframe_descriptors = pd.concat([dataframe, descriptors(dataframe.canonical_smiles)], axis=1)
+
+    # Coerce 'standard_value' to numeric, if it exists
+    if 'standard_value' in dataframe.columns:
+        dataframe_descriptors['standard_value'] = pd.to_numeric(dataframe_descriptors['standard_value'], errors='coerce')
+        dataframe_descriptors = dataframe_descriptors.loc[pd.notna(dataframe_descriptors['standard_value'])]
+        dataframe_descriptors = norm_value(dataframe_descriptors)
+        dataframe_descriptors = pIC50(dataframe_descriptors)
+    
+    # Drop NaN values
+    dataframe_descriptors.dropna(inplace=True)
+    dataframe_descriptors.reset_index(drop=True, inplace=True)
+    
+    return dataframe_descriptors
+
 
 
 
