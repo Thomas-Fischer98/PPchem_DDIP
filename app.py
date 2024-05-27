@@ -28,8 +28,7 @@ with open('/content/PPchem_DDIP/models/variance_threshold_selector.pkl', 'rb') a
     selector = pickle.load(file)
 
 
-st.image('/content/PPchem_DDIP/assets/image_dipp.png', caption='DIPP', width=300)
-
+st.image('/content/PPchem_DDIP/assets/banner.png', caption='DIPP', width=300)
 
 
 st.title('Is it active against mTOR ?')
