@@ -70,12 +70,12 @@ def predict():
 
     if prediction1 >= 1.5:
         
-        st.succes('Congratulations :partying_face: !!! The molecule you proposed is active :thumbsup:')
+        st.success('Congratulations :partying_face: !!! The molecule you proposed is active :thumbsup:')
         st.ballons()
 
     elif 0.5 <= prediction1 <= 1.5:
 
-        st.succes('Congratulations ! The molecule you proposed is moderately active :thumbsup:')
+        st.success('Congratulations ! The molecule you proposed is moderately active :thumbsup:')
        
     else:
         
