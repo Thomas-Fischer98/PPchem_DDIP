@@ -59,7 +59,7 @@ def predict():
     prediction2 = model_fcn.predict(fused_f)
     prediction3 = model_svm.predict(fused_f)
 
-    prediction_list = [prediction1, prediction2, prediction3]
+    prediction_list = [prediction1[0], prediction2[0], prediction3[0]]
 
     mean_value = statistics.mean(prediction_list)
     std_dev_value = statistics.stdev(prediction_list)
