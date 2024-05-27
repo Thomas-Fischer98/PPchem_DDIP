@@ -49,7 +49,9 @@ smiles = st_ketcher(height=400)
 
 df_desc1 = descriptor_smiles(smiles)
 
-fused_f = selector.transform(df_desc1)
+df_dropped = df_desc1.drop(df_desc1.columns[0], axis=1)
+
+fused_f = selector.transform(df_dropped)
 
 def predict():
     
