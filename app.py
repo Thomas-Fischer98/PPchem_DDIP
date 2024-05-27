@@ -23,7 +23,7 @@ with open('/content/PPchem_DDIP/models/variance_threshold_selector.pkl', 'rb') a
     selector = pickle.load(file)
 
 
-st.image('/content/PPchem_DDIP/assets/banner.png', caption='DIPP', width=300)
+st.image('/content/PPchem_DDIP/assets/banner.png', caption='DIPP', width=800)
 
 
 st.title('Is it active against mTOR ?')
@@ -33,11 +33,6 @@ smiles = st.text_input("Please input your candidate SMILE", "")
 
 st.write('OR')
 st.write('You can simply draw a candidate molecule in the box bellow:')
-
-#add bioactivity will be there to convert pIC50 to bioactivaty score
-#datacleaner will clean the NaN etc
-#look descriptor_df
-
 
 smiles = st_ketcher(height=400)
 
@@ -57,10 +52,10 @@ def predict():
         
         st.success('Congratulations :partying_face: !!! The molecule you proposed is active :thumbsup:')
         st.ballons()
-        
+
     else:
         
-        st.error('The molecule is inactive :thumbsdown:')
+        st.error('The molecule is inactive/moderately active :thumbsdown:')
     
 
 st.button('Predict', on_click=predict)
