@@ -1,5 +1,5 @@
 import streamlit as st
-import joblib
+import pickle
 import numpy as np
 import pandas as pd
 import statistics
@@ -18,15 +18,17 @@ from sklearn import preprocessing
 from streamlit_ketcher import st_ketcher
 
 
-selector = joblib.load('/Users/davidsegura/git/practical_programming_in_chemistry/PPchem_DDIP/notebooks/selection.joblib')
-model_rf = joblib.load('/Users/davidsegura/git/practical_programming_in_chemistry/PPchem_DDIP/models/rf_model.joblib')
-model_gbm = joblib.load('/Users/davidsegura/git/practical_programming_in_chemistry/PPchem_DDIP/models/gbm_model.joblib')
-model_fcn = joblib.load('/Users/davidsegura/git/practical_programming_in_chemistry/PPchem_DDIP/models/fcn_model.joblib')
-model_fcnn = joblib.load('/Users/davidsegura/git/practical_programming_in_chemistry/PPchem_DDIP/models/fcnn_model.joblib')
-model_svm = joblib.load('/Users/davidsegura/git/practical_programming_in_chemistry/PPchem_DDIP/models/fcnn_model.joblib')
+with open('/content/PPchem_DDIP/models/fcn_model.pkl', 'rb') as file:
+    model_fcn = pickle.load(file)
+with open('/content/PPchem_DDIP/models/rf_model.pkl', 'rb') as file:
+    model_rf = pickle.load(file)
+with open('/content/PPchem_DDIP/models/svm_model.pkl', 'rb') as file:
+    model_svm = pickle.load(file)
+with open('/content/PPchem_DDIP/models/variance_threshold_selector.pkl', 'rb') as file:
+    selector = pickle.load(file)
 
 
-st.image('/Users/davidsegura/git/practical_programming_in_chemistry/PPchem_DDIP/image_dipp.png', caption='DIPP', width=300)
+st.image('/Users/davidsegura/git/practical_programming_in_chemistry/PPchem_DDIP/assets/image_dipp.png', caption='DIPP', width=300)
 
 
 
@@ -54,10 +56,8 @@ def predict():
     prediction1 = model_rf.predict(fused_f)
     prediction2 = model_fcn.predict(fused_f)
     prediction3 = model_svm.predict(fused_f)
-    prediction4 = model_fcnn.predict(fused_f)
-    prediction5 = model_gbm.predict(fused_f)
 
-    prediction_list = [prediction1, prediction2, prediction3, prediction4, prediction5]
+    prediction_list = [prediction1, prediction2, prediction3]
 
     mean_value = statistics.mean(prediction_list)
     std_dev_value = statistics.stdev(prediction_list)
