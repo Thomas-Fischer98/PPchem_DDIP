@@ -17,11 +17,6 @@ from sklearn import preprocessing
 
 from streamlit_ketcher import st_ketcher
 
-
-with open('/content/PPchem_DDIP/models/fcn_model.pkl', 'rb') as file:
-    model_fcn = pickle.load(file)
-with open('/content/PPchem_DDIP/models/rf_model.pkl', 'rb') as file:
-    model_rf = pickle.load(file)
 with open('/content/PPchem_DDIP/models/svm_model.pkl', 'rb') as file:
     model_svm = pickle.load(file)
 with open('/content/PPchem_DDIP/models/variance_threshold_selector.pkl', 'rb') as file:
@@ -54,28 +49,15 @@ fused_f = selector.transform(df_dropped)
 
 def predict():
     
-    prediction1 = model_rf.predict(fused_f)
-    prediction2 = model_fcn.predict(fused_f)
-    prediction3 = model_svm.predict(fused_f)
+    prediction = model_svm.predict(fused_f)
 
-    prediction_list = [prediction1[0], prediction2[0], prediction3[0]]
+    st.write(f"Predicted bioactivity score: {prediction}")
 
-    mean_value = statistics.mean(prediction_list)
-    std_dev_value = statistics.stdev(prediction_list)
-
-    approx = mean_value - std_dev_value
-
-    st.write(f"Predicted bioactivity score: {prediction1[0]}")
-
-    if prediction1 >= 1.5:
+    if prediction >= 1.5:
         
         st.success('Congratulations :partying_face: !!! The molecule you proposed is active :thumbsup:')
         st.ballons()
-
-    elif 0.5 <= prediction1 <= 1.5:
-
-        st.success('Congratulations ! The molecule you proposed is moderately active :thumbsup:')
-       
+        
     else:
         
         st.error('The molecule is inactive :thumbsdown:')
