@@ -83,6 +83,14 @@ def test_descriptors1(valid_smiles):
     with pytest.raises(ValueError):
         descriptors1("InvalidSMILES")
 
+def test_descriptor_smiles(valid_smiles):
+    smiles = valid_smiles[0] 
+    result = descriptor_smiles(smiles)
+    assert isinstance(result, pd.DataFrame)
+    assert len(result) == 1
+    assert "canonical_smiles" in result.columns
+    assert "MolWt" in result.columns
+
 def test_descriptors(valid_smiles):
     result = descriptors(valid_smiles)
     assert isinstance(result, pd.DataFrame)
@@ -184,7 +192,7 @@ def test_plot_f1_scores():
 
 class TestLipinski1(unittest.TestCase):
     def test_valid_smiles(self):
-        smiles = 'CCO'
+        smiles = "CCO"
         result = lipinski1(smiles)
         expected = pd.DataFrame({
             "Mw" : [46.069],
@@ -200,7 +208,7 @@ class TestLipinski1(unittest.TestCase):
             lipinski1(smiles)
 
     def test_output_structure(self):
-        smiles = 'CCO'
+        smiles = "CCO"
         result = lipinski1(smiles)
         self.assertIsInstance(result, pd.DataFrame)
         self.assertListEqual(list(result.columns), ['Mw', 'H donors', 'H acceptors', 'Log P'])
@@ -229,7 +237,7 @@ class TestDescriptors1(unittest.TestCase):
 
 class TestDescriptorSmiles(unittest.TestCase):
     def test_valid_smiles(self):
-        smiles = 'CCO'
+        smiles = "CCO"
         result = descriptor_smiles(smiles)
         self.assertIn('canonical_smiles', result.columns)
         self.assertIn('MolWt', result.columns)
@@ -245,32 +253,14 @@ class TestDescriptorSmiles(unittest.TestCase):
             descriptor_smiles(smiles)
 
     def test_output_structure(self):
-        smiles = 'CCO'
+        smiles = "CCO"
         result = descriptor_smiles(smiles)
         self.assertIsInstance(result, pd.DataFrame)
         self.assertEqual(len(result), 1)
         self. assertIn('canonical_smiles', result.columns)
 
-#testest
 
 
 if __name__ == "__main__":
     pytest.main()
     unittest.main()
-    TestDescriptorSmiles()
-    TestDescriptors1()
-    TestLipinski1()
-    test_plot_f1_scores()
-    test_augment_data()
-    test_optimize_hyperparameters_random_search()
-    test_plot_multiclass_roc()
-    test_data_split_scale()
-    test_data_prep()
-    test_descriptor_df()
-    test_lipinski_df()
-    test_add_bioactivity()
-    test_data_cleaner()
-    test_descriptors()
-    test_descriptors1()
-    test_lipinski1()
-    test_lipinski()
