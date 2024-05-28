@@ -251,6 +251,8 @@ class TestDescriptorSmiles(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self. assertIn('canonical_smiles', result.columns)
 
+#testest
+
 
 if __name__ == "__main__":
     pytest.main()
