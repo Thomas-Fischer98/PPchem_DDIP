@@ -3,7 +3,7 @@
 ![Coverage Status](assets/coverage-badge.svg)
 
 <h1 align="center">
-PPchem_DDIP
+Drug Discovery and pIC50 Prediction (DDIP)
 </h1>
 
 <br>
@@ -12,7 +12,7 @@ PPchem_DDIP
 
 ## Overview
 
-DDIP (Drug Developpment and pIC50 Prediction) is a programm based in a jupyter notebook format that can predict pIC50 values for different drugs acting on a target protein. To do so, different machine learning models (such as RandomForest, Gradient Boosting Machines (GBM) and Fully Connected Neural Network) were tested in order to have the best prediction on pIC50 values. These pIC50 values are then used to determine if a drug is bioactive on the target protein. 
+DDIP (Drug Discovery and pIC50 Prediction) is a programm based in a jupyter notebook format that can predict pIC50 values for different drugs acting on a target protein (mTOR, mechanistic Target Of Rapamycin). To do so, different machine learning models (such as RandomForest, Gradient Boosting Machines (GBM) and Fully Connected Neural Network) were tested in order to have the best prediction on pIC50 values. These pIC50 values are then used to determine if a drug is bioactive on the target protein. 
 
 ## 👩‍💻 Installation
 
@@ -49,18 +49,11 @@ To install the needed packages, you can enter the following command.
 pip install ppchem_ddip
 ```
 
-## 🔥 Usage
+All packages can be installed with the requirements.txt file. 
 
-```python
-from mypackage import main_func
-
-# One line to rule them all
-result = main_func(data)
 ```
-
-This usage example shows how to quickly leverage the package's main functionality with just one line of code (or a few lines of code). 
-After importing the `main_func` (to be renamed by you), you simply pass in your `data` and get the `result` (this is just an example, your package might have other inputs and outputs). 
-Short and sweet, but the real power lies in the detailed documentation.
+pip install -r requirements.txt
+```
 
 ## License
 
