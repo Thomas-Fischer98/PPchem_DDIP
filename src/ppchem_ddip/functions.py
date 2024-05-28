@@ -327,6 +327,10 @@ def descriptor_smiles(smiles):
     # Convert SMILES to a dataframe
     dataframe = pd.DataFrame({'canonical_smiles': [smiles]})
 
+    molec = Chem.MolFromSmiles(smiles)
+    if molec is None:
+        raise ValueError("Invalid SMILES string")
+    
     # Calculate descriptors
     dataframe_descriptors = pd.concat([dataframe, descriptors(dataframe.canonical_smiles)], axis=1)
 
