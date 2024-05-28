@@ -61,7 +61,7 @@ except Exception as e:
 _metadata = metadata("PPchem_DDIP")
 
 project = _metadata["DDIP"]
-author = _metadata["Thomas Fischer, Kelian Gaedecke and David Segura"].split("<", 1)[0].strip()
+author = _metadata["David Segura, Kelian Gaedecke and Thomas Fischer"].split("<", 1)[0].strip()
 copyright = f"2024, {author}"
 
 version = _metadata["Version"]
