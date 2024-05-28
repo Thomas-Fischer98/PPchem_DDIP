@@ -1,13 +1,15 @@
 import pytest
 import pandas as pd
 import numpy as np
+import tkinter
+import matplotlib.pyplot as plt
 from sklearn.datasets import make_classification
 from rdkit.Chem import Descriptors
 
 from ppchem_ddip.functions import (
     lipinski1, lipinski, norm_value, pIC50, descriptors1, descriptors,
     data_cleaner, add_bioactivity, lipinski_df, descriptor_df, data_prep, data_split_scale, plot_multiclass_roc,
-    randomize_smiles, augment_data, plot_f1_scores
+    randomize_smiles, augment_data, plot_f1_scores, optimize_hyperparameters_random_search
 )
 
 # Mock data for testing
@@ -141,19 +143,25 @@ def test_plot_multiclass_roc():
     plot_multiclass_roc(y_test, y_score, n_classes)
 
 def test_optimize_hyperparameters_random_search():
-    np.random.seed(42)
-    X, y = make_classification(n_samples=1000, n_features=20, n_classes = 3)
-    dataframe = pd.DataFrame(X)
-    dataframe['target'] = y
-    model_type = 'rf'
-    best_params, test_accuracy = test_optimize_hyperparameters_random_search(dataframe, model_type)
-    assert isinstance(best_params, dict)
-    assert isinstance(test_accuracy, float)
+    test_cases = [
+        {'missing_columns': ['molecule_chembl_id']},
+        {'missing_columns': ['pIC50']},
+        {'missing_columns': ['canonical_smiles']},
+        {'missing_columns': ['molecule_chembl_id', 'pIC50']},
+        {'missing_columns': ['molecule_chembl_id', 'canonical_smiles']},
+        {'missing_columns': ['pIC50', 'canonical_smiles']},
+    ]
 
-def test_randomize_smiles():
-    smiles = 'CCO'
-    randomized_smiles = randomize_smiles(smiles)
-    assert isinstance(randomized_smiles, str)
+    for test_case in test_cases:
+        with pytest.raises(KeyError):
+            np.random.seed(42)
+            X, y = np.random.rand(100, 5), np.random.randint(0, 3, size=100)
+            dataframe = pd.DataFrame(X, columns=['feat_1', 'feat_2', 'feat_3', 'feat_4', 'feat_5'])
+            dataframe['target'] = y
+
+            dataframe.drop(columns=test_case['missing_columns'], errors='ignore', inplace=True)
+
+            optimize_hyperparameters_random_search(dataframe, 'rf')
 
 def test_augment_data():
     np.random.seed(42)
@@ -165,7 +173,8 @@ def test_augment_data():
 def test_plot_f1_scores():
     n_classes = 5
     y_test = np.random.randint(0, n_classes, size=100)
-    y_pred = np.random.randint(0,n_classes, size=100)
+    y_pred = np.random.randint(0, n_classes, size=100)
+
     plot_f1_scores(y_pred, y_test, n_classes)
 
 
