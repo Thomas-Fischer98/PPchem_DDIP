@@ -60,8 +60,8 @@ except Exception as e:
 
 _metadata = metadata("PPchem_DDIP")
 
-project = _metadata["Name"]
-author = _metadata["Author-email"].split("<", 1)[0].strip()
+project = _metadata["DDIP"]
+author = _metadata["Thomas Fischer, Kelian Gaedecke and David Segura"].split("<", 1)[0].strip()
 copyright = f"2024, {author}"
 
 version = _metadata["Version"]
@@ -94,3 +94,7 @@ suppress_warnings = [
 
 html_theme = "furo"
 html_static_path = ["_static"]
+#html_logo met un logo sur le site
+html_logo = 'image_dipp.png'
+html_favicon = 'image_dipp.png'
+html_title = 'DDIP'

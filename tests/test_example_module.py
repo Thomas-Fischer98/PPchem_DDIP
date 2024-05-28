@@ -1,15 +1,19 @@
 import pytest
+import unittest
 import pandas as pd
 import numpy as np
 import tkinter
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_classification
 from rdkit.Chem import Descriptors
+from rdkit import Chem
 
 from ppchem_ddip.functions import (
     lipinski1, lipinski, norm_value, pIC50, descriptors1, descriptors,
     data_cleaner, add_bioactivity, lipinski_df, descriptor_df, data_prep, data_split_scale, plot_multiclass_roc,
-    randomize_smiles, augment_data, plot_f1_scores, optimize_hyperparameters_random_search
+    randomize_smiles, augment_data, plot_f1_scores, optimize_hyperparameters_random_search, lipinski1,descriptors1, descriptor_smiles
 )
 
 # Mock data for testing
@@ -176,10 +180,95 @@ def test_plot_f1_scores():
     y_pred = np.random.randint(0, n_classes, size=100)
 
     plot_f1_scores(y_pred, y_test, n_classes)
+    plt.close()  
 
+class TestLipinski1(unittest.TestCase):
+    def test_valid_smiles(self):
+        smiles = 'CCO'
+        result = lipinski1(smiles)
+        expected = pd.DataFrame({
+            "Mw" : [46.069],
+            "H donors" : [1],
+            "H acceptors" : [1],
+            "Log P" : [-0.0014]
+        })
+        pd.testing.assert_frame_equal(result, expected, rtol=1e-2)
 
+    def test_invalid_smiles(self):
+        smiles = 'invalid_smiles'
+        with self.assertRaises(ValueError):
+            lipinski1(smiles)
 
+    def test_output_structure(self):
+        smiles = 'CCO'
+        result = lipinski1(smiles)
+        self.assertIsInstance(result, pd.DataFrame)
+        self.assertListEqual(list(result.columns), ['Mw', 'H donors', 'H acceptors', 'Log P'])
+        self.assertEqual(len(result), 1)
+
+class TestDescriptors1(unittest.TestCase):
+    def test_valid_smiles(self):
+        smiles = "CCO"
+        result = descriptors1(smiles)
+        descriptor_names = [desc[0] for desc in Descriptors.descList]
+        self.assertListEqual(list(result.columns), descriptor_names)
+        self.assertEqual(len(result), 1)
+
+    def test_invalide_smiles(self):
+        smiles = 'Invalid_smiles'
+        with self.assertRaises(ValueError):
+            descriptors1(smiles)
+
+    def test_output_structure(self):
+        smiles = "CCO"
+        result = descriptors1(smiles)
+        self.assertIsInstance(result, pd.DataFrame)
+        descriptor_names = [desc[0] for desc in Descriptors.descList]
+        self.assertListEqual(list(result.columns), descriptor_names)
+        self.assertEqual(len(result), 1)
+
+class TestDescriptorSmiles(unittest.TestCase):
+    def test_valid_smiles(self):
+        smiles = 'CCO'
+        result = descriptor_smiles(smiles)
+        self.assertIn('canonical_smiles', result.columns)
+        self.assertIn('MolWt', result.columns)
+        self.assertEqual(result['canonical_smiles'][0], smiles)
+
+        mol = Chem.MolFromSmiles(smiles)
+        expected_mol_wt = Descriptors.MolWt(mol)
+        self.assertAlmostEqual(result['MolWt'][0], expected_mol_wt, places=2)
+
+    def test_invalid_smiles(self):
+        smiles = 'Invalid_smiles'
+        with self.assertRaises(ValueError):
+            descriptor_smiles(smiles)
+
+    def test_output_structure(self):
+        smiles = 'CCO'
+        result = descriptor_smiles(smiles)
+        self.assertIsInstance(result, pd.DataFrame)
+        self.assertEqual(len(result), 1)
+        self. assertIn('canonical_smiles', result.columns)
 
 
 if __name__ == "__main__":
     pytest.main()
+    unittest.main()
+    TestDescriptorSmiles()
+    TestDescriptors1()
+    TestLipinski1()
+    test_plot_f1_scores()
+    test_augment_data()
+    test_optimize_hyperparameters_random_search()
+    test_plot_multiclass_roc()
+    test_data_split_scale()
+    test_data_prep()
+    test_descriptor_df()
+    test_lipinski_df()
+    test_add_bioactivity()
+    test_data_cleaner()
+    test_descriptors()
+    test_descriptors1()
+    test_lipinski1()
+    test_lipinski()
