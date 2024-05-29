@@ -46,7 +46,7 @@ If you need jupyter lab, install it
 To install the needed packages, you can enter the following command. 
 
 ```
-pip install ppchem_ddip
+pip install "git+https://github.com/Thomas-Fischer98/PPchem_DDIP.git"
 ```
 
 All packages can be installed with the requirements.txt file. 
