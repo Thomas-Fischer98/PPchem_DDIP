@@ -55,6 +55,14 @@ All packages can be installed with the requirements.txt file.
 pip install -r requirements.txt
 ```
 
+### How to use app.py
+
+In order to use app.py, you first need to install everything as mentionned and then run the App_deplyment.ipynb file. Then you will have to run all cells in the notebook and finally a link will appear. Click on the link and it will redirect you to the app on the web. After enetering a SMILES or drawing the molecule, you can predict its bioactivity. 
+
+### Documentation
+
+To access documentation, go to Doc, then to docs_out, then to html and finally open index.html. 
+
 ## License
 
 This project is licensed under the MIT license
